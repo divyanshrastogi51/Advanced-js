@@ -110,3 +110,120 @@ Google Chrome's V8 engine is a runtime that compiles JavaScript to machine code.
 
 Low level languages tend to have no or very small runtimes. Higher level programming languages often have runtimes. Java ("write once, run anywhere") is a famous example: Java Runtime Environment (JRE).
 
+# 1.6 Execution Context
+
+Each function call creates a new **execution context**.
+
+Each execution context is added to the Call Stack. Each function or variable has access to its execution context.
+
+There is always a **global** execution context. So there is always an execution context
+
+# 1.7 Lexical environment
+
+Lexical environment: where code is written (global or inside a function).
+
+**Execution context** tells you which **lexical environment** is currently running.
+
+## Lexical scope
+
+Lexical scope is the **available data** (execution context and memory heap) + **variables where the function was defined** (lexical environment).
+
+This determines our available variables and _not_ where the function is called (dynamic scope).
+
+If a function is written inside another function you have a function lexical environment. The outer function is the **function lexical environment** for the inner function.
+
+## Function lexical environment
+
+If a function is written inside another function you have a function lexical environment. The outer function is the **function lexical environment** for the inner function.
+
+# 1.8 Function scope vs Block scope
+
+Originally JavaScript is only functionally scoped and not block scoped. This means that variables inside functions are private, but variables inside code blocks `{}` such as with if/else-statements are not scoped. Values in such blocks can be accessed.
+
+Most languages do have block scoping.
+
+Because JS was weird in that sense they introduced the `let` and `const` keywords in ECMAScript 6. Variables declared with these keywords are block scoped.
+
+# 1.9 Global variables
+
+Try to avoid them as much as possible. ;-)
+
+# 1.10 `this`
+
+Do you know what *this* is?
+
+**this** is the object that the function is a property of.
+
+`this` basically answers the question: **"what called me?"**
+
+Global functions are a property of the global object. On the web that is `window`.
+
+For methods, functions sitting on objects, *this* refers to those objects that they are a method of.
+
+`this` then refers to what is left of the "." in method calls.
+
+When calling `Person.sayName()` `this` refers to "Person".
+
+When calling `helloWorld()` in the global lexical scope, `this` refers to the global scope such as the Window object in browsers. You could also have written `window.helloWorld()`.
+
+## `this` and dynamic scope vs lexical scope
+
+It's about the calling context (**dynamic scope**) and _NOT_ the lexical scope.
+
+"In JavaScript our lexical scope (available data + variables where the function was defined) determines our available variables. Not where the function is called (dynamic scope)."
+
+```
+// Helper function
+const isSingular = (number) => {
+		return number === 0 || number === 1;
+};
+
+const Person = {
+		name: null,
+		age: null,
+		sayName() {
+			return this.name;
+		},
+		sayAge() {
+			return this.age;
+		},
+		sayNameAndAge() {
+				return `My name is ${this.sayName} and I am ${this.sayAge} year${isSingular(this.sayAge) ? "" : "s"} old.`;
+		},
+};
+
+const ruben = { ...Person, name: "Ruben", age: 33 };
+```
+# 1.11 call(), apply(), bind()
+
+## `call()`
+
+Under the hood all functions use `call()` when they run. Every function gets this method attached to it.
+
+## `apply()`
+
+`apply()` does the same thing as `call()`.
+
+## `call(obj, args...)` and `apply(obj, [args...])`
+
+With call and apply you can borrow methods from other objects and "apply" them to an object that does not have that method. You can also pass in extra parameters.
+
+## `bind()`
+
+Also allows us to use other object's methods, but with the difference that bind returns a new function. It basically copies it for later use without calling the function immediately. 
+
+## bind() and currying
+
+WIth `.bind()` you can extend any function through currying (passing function into functions).
+
+```
+function multiply(a, b) {
+	return a * b;
+}
+
+let multiplyByTwo = multiply.bind(this, 2);
+let multiplyByTen = multiply.bind(this, 10);
+
+console.log(multiplyByTwo(4)); // 8
+console.log(multiplyByTen(4)); // 40
+```
