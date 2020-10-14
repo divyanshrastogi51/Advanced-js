@@ -317,3 +317,93 @@ let deepClone = JSON.parse(JSON.stringify(obj));
 A very controversial topic.
 
 Operators like `==`, `+` result in coercion. Better avoid generally.
+
+# 3 Two Pillars
+# 3.1 Functions: First Class Citizens
+
+Functions are data.
+
+Functions are `object`s.
+
+They can be **passed** around in other functions and **returned** by other functions.
+
+They can be stored inside variables (**function expressions**).
+
+Anything you can do with any other type you can do with functions.
+
+This opens up exciting possibilities for **functional programming**.
+
+# 3.2 Higher Order Functions (HOF)
+
+_Don't hassle the Hoff!_
+
+## Powerful and an easy definition
+
+```
+function() < function(a,b) < HOF
+```
+
+A **Higher Order Function** (HOF) is a function that takes a **function as an argument** or **returns a function**.
+
+## But why are HOF's useful and how to use them properly?
+
+Yeah?
+
+
+# 3.3 Pillar 1: Closures
+
+Variables in the **variable environment** of an **execution context** of a **higher order function**, i.e. a function that returns a function, are stored in a special box, "**the closure**". These variables are **not collected** by the **garbage collector**.
+
+That all this can happen is thanks to the concept of the **lexical environment** which is checked by the JIT Compiler before executing any code. It sees that there are variables in functions bodies (soon to be execution contexts) that will be referenced later by "lower order" functions.
+
+## Closures are sometimes referred to as "lexical scoping"
+
+**lexical** = where the code is written.
+**scope** = what variables the JIT compiler/runtime has access to.
+
+In execution contexts you do not only have access to variables higher in the calling context, but also what is stored in the memory heap through closures.
+
+**Lexical environment === [[scope]]**
+
+Where we write the function matters. Not where we call/invoke the function.
+excode: https://repl.it/repls/GlaringLovingCables 
+## Closures & Encapsulation
+
+## Principle of least privilege
+
+Data safety when making API's or other code that is accessibily to the public. With closures you can keep data safe for internal reasons.
+Code: https://repl.it/repls/ExhaustedDisgustingSet
+
+# 3.4 Pillar 2: Prototypal Inheritance
+
+Almost everything in JavaScript is an object. All objects inherit from other objects until all the way up to the **prototype chain** the base `Object`.
+
+`__proto__` can be used to extend objects to protypal objects, but should never be used!
+
+`.isPrototypeOf(Object)` checks if passed the object it is called upon (`this`) is a prototype of the passed in object.
+
+`.hasOwnProperty`: checks if a given property is on the object it is called upon. There is, in other words, no need to go up the prototype chain.
+
+Make one object inherit from another object:
+
+```
+const lizard = {
+	strength: 10,
+	health: 100,
+	attack() {
+		return this.strength;
+	},
+	battleCry() {
+		return `Broaoa!`;
+	},
+}
+
+const dragon = {
+	strength: 50,
+	health: 200,
+};
+
+dragon.__proto__ = lizard;
+```
+
+`lizard.isPrototypeOf(dragon) === true`
