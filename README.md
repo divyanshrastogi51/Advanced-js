@@ -227,3 +227,93 @@ let multiplyByTen = multiply.bind(this, 10);
 console.log(multiplyByTwo(4)); // 8
 console.log(multiplyByTen(4)); // 40
 ```
+
+# 2. Types
+# 2.1 Six and a half types ...and "function"
+
+There are 6 data types in JavaScript... or actually 7... wait, no! There are six! Huh!? Whaaa!
+
+## Primitive types
+
+Represent single values. Easy and simply.
+
+1. `number` like 5
+
+2. `string` like "Hello world!"
+
+3. `undefined` when something lacks a definition. Variables that are hoisted or defined without assignment are assigned "undefined".
+
+4. `null` doesn't actually exist as a type, but is an "object". This is one of the quirks of JS.
+
+5. `symbol` for unique object properties
+
+
+##  Non-primitive types
+
+Can combine multiple types. Do not actually contain the value directly, but is a reference (pointer) to some place in memory.
+
+6. `object` for objects, arrays, functions and... null
+
+7. `function` is not actually a real type because it is actually an object.
+
+- Arrays are `object`s
+
+So up to number five it all makes sense, but then it gets weird. `null` is an object while it shouldn't be. Functions have the type of `function` while they should be `object`s.
+
+# 2.2 Pass by reference vs pass by value
+
+## Passed by value
+
+Primitives are **passed by value**.
+
+There is no link back to memory, but bascially you are dealing with a copy of the original. Changing these values does not affect the original, but the copy.
+
+## Passed by reference
+
+Objects are **passed by reference**.
+
+When objects are passed into a function they still point to the original place in memory. Making changes to the object that are passed into functions changes the original.
+
+## Cloning objects
+
+How can we create copies of objects and not references?
+
+### Shallow cloning
+
+Clone one object, but not child objects.
+
+```
+const obj = {
+	a: 1,
+	b: 2,
+	c: {
+		deep: "Try and copy me"
+	}
+};
+
+let clone1 = Object.assign({}, obj);
+let clone2 = { ...obj };
+```
+
+### Deep cloning
+
+Clone an object and all objects within it.
+
+Below is not a good idea generally, because with massive objects it can take a long time and increased memory consumption. There are better ways of solve problems around objects passed by reference.
+
+```
+const obj = {
+	a: 1,
+	b: 2,
+	c: {
+		deep: "Try and copy me"
+	}
+};
+
+let deepClone = JSON.parse(JSON.stringify(obj)); 
+```
+# 2.3 Coercion
+
+A very controversial topic.
+
+Operators like `==`, `+` result in coercion. Better avoid generally.
