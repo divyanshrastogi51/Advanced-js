@@ -407,3 +407,206 @@ dragon.__proto__ = lizard;
 ```
 
 `lizard.isPrototypeOf(dragon) === true`
+
+
+# 3 OOPS
+# 3.1 Factory functions
+
+Factory functions are functions that create objects with arguments passed into them. Each new object created this way can share properties and methods, but can also have it's own unique properties and methods.
+
+```
+function createElf(name, weapon) {
+	return {
+		name,
+		weapon,
+		attack() {
+			return `${this.name} attacks with ${this.weapon}`;
+		}
+	};
+}
+
+const legolas = createElf("Legolas", "silver bow");
+const marwin = createElf("Marwin", "dual swords");
+
+console.log(legolas.attack());
+console.log(marwin.attack());
+```
+
+Although above code is DRY there is a downside: for each new elf a new object is created and stored at a new address in memory. Each object has it's own properties and methods.
+
+CodeEx: https://repl.it/repls/PlainPrudentPercent
+
+# 3.2 `Object.create()`
+
+`Object.create()` creates a link between two objects. It creates a prototype chain: (`derivedObject.__proto__ === originObject`)
+
+```
+// Factory function using Object.create() for efficient memory usage.
+const elfMethods = {
+  attack() {
+    return `${this.name} attacks with ${this.weapon}.`;
+  },
+  battleCry() {
+    return `${this.name}: "For ${this.kingdom}!"`;
+  },
+};
+
+// The factory function.
+function createElf(name, kingdom, weapon) {
+  let newElf = Object.create(elfMethods);
+  
+  newElf.name = name;
+  newElf.kingdom = kingdom;
+  newElf.weapon = weapon;
+  
+  return newElf;
+}
+
+const legolas = createElf("Legolas", "Dark Woods", "silver bow");
+const arwen = createElf("Arwen", "Ravendale", "moon lance");
+
+console.log(legolas.battleCry());
+console.log(legolas.attack());
+console.log(arwen.battleCry());
+console.log(arwen.attack());
+```
+# 3.3 Constructor functions
+
+The `new` keyword used before calling a constructor function creates a new object with all the properties and methods defined in the constructor function. It also creates a new execution context with newly bound `this` and `arguments` keywords.
+
+CodePen: https://repl.it/repls/PrivateQuickRecursion
+
+# 3.4 ES6 `class` keyword
+
+```
+// "Class" for Pseudo-Classical Inheritance
+class Elf {
+  constructor(name, kingdom, weapon) {
+    this.name = name;
+    this.kingdom = kingdom;
+    this.weapon = weapon; 
+  }
+
+  // Do not add methods inside the constructor because that
+  // gets run everytime a new object is instantiated.
+  attack() {
+      return `${this.name} attacks with ${this.weapon}.`;
+  };
+
+  battleCry() {
+    return `${this.name}: "For ${this.kingdom}!"`;
+  }
+}
+
+// Instantiate new objects.
+const legolas = new Elf("Legolas", "Dark Woods", "silver bow");
+const arwen = new Elf("Arwen", "Ravendale", "moon lance");
+
+// Is legolas an istance of Elf?
+console.log(`Is legolas an istance of Elf? ${legolas instanceof Elf}`);
+
+console.log(legolas.battleCry());
+console.log(legolas.attack());
+
+console.log(arwen.battleCry());
+console.log(arwen.attack());
+```
+# 3.5 Four ways to bind `this`
+
+```
+// (1) With the `new` keyword
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+  this.sayHi = function () {
+    return `Hi, I'm ${this.name}.`;
+  };
+}
+
+const dave = new Person("Dave", 24);
+
+console.log(dave.sayHi());
+
+// (2) Implicit binding
+const charlotte = {
+  name: "Charlotte",
+  age: 35,
+  sayHi() {
+    return `Hi, I'm ${this.name}.`;
+  },
+};
+
+console.log(charlotte.sayHi());
+
+// (3) Explicit binding
+const karin = {
+  name: "Karin",
+  age: 48,
+  
+  // Below function with timeout returns "2"... lol?
+  sayHi: function () {
+    return `Hi, I'm ${this.setTimeout(() => this.name, 500)}.`;
+  }.bind(window),
+};
+
+console.log(karin.sayHi());
+
+// (4) Arrow function
+const aris = {
+  name: "Aris",
+  age: 59,
+  sayHi: function () {
+    var inner = () => {
+      return `Hi, I'm ${this.name}.`;
+    };
+    
+    return inner();
+  },
+};
+
+console.log(aris.sayHi());
+```
+# 3.6 OOP and Inheritance
+
+With the `extend` and `super` keywords you can extend classes created with the `class` keyword.
+
+It's the core of the Classical Object Oriented paradigm. It adds inheritance. In the case of JavaScript it creates a Prototypal Inhertiance.
+
+```
+// Base Character class
+class Character {
+  constructor (name, allegiance, weapon) {
+    this.name = name;
+    this.allegiance = allegiance;
+    this.weapon = weapon;
+  }
+  
+  attack () {
+    return `${this.name} attacks with ${this.weapon ? this.weapon : "fists"}.`;
+  }
+  
+  battleCry () {
+    return `${this.name}: "For ${this.allegiance}! Charge!!"`;
+  }
+}
+
+// Elf class that exends the Character class
+class Elf extends Character {
+  constructor (name, allegiance, weapon, type) {
+    super (name, allegiance, weapon);
+    
+    this.type = type;
+  }
+}
+
+const doby = new Elf("Doby", "House of Fallstar", "Aspen Bow", "elf");
+
+console.log(doby.battleCry());
+console.log(doby.attack());
+```
+# 3.7 Four Pillars of OOP
+
+1. Encapsulation ("class packages")
+2. Abstraction ("hiding complexity for the user")
+3. Inheritance ("DRY and safe memory space")
+4. Polymorphism ("many forms")
