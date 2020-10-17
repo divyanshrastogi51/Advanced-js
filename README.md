@@ -610,3 +610,173 @@ console.log(doby.attack());
 2. Abstraction ("hiding complexity for the user")
 3. Inheritance ("DRY and safe memory space")
 4. Polymorphism ("many forms")
+
+# 4 Functional programming
+
+**Function programming** is all about **separation of concerns**: separating data and function.
+
+FP generally has a preference for simplicity and single purpose. Functions do one thing very well.
+
+Above is in essence a **pure function**:
+
+- Given the same input you always get the same output;
+- There are no side effects.
+
+The first principle is also called **referential transparency**.
+
+# 4.1 Pure functions
+
+A **pure function** has the following characteristics:
+
+- Given the same input you always get the same output;
+- There are no side effects.
+
+The first principle is also called **referential transparency** or **idempotency**.
+
+Not everthing can be pure in the philosophical sense that something pure will not do anything: there is no affect on the outside world. Somewhere, somehow you want/need to have side effects in order to change something in the "outside world".
+
+The idea of pure functions is however that you minimize and cluster the area's where your code has side effects and is thus "tightly coupled" with data and views.
+
+# 4.2 Idempotence
+
+Given the same input a functions always return the same output.
+
+Functions with `Math.random()` can never be idempotent for example.
+
+Also deleting an entry from a database cannot be idempotent, because you can not delete the same entry again. The function will not give the same result.
+
+# 4.3 Imperative vs Declarative
+
+Imperative: step for step instructions.
+
+Declarative: just say what needs to happen (lower level code takes care of the rest)
+
+So imperative is more related to lower level code. Declarative is more related to higher level code.
+
+# 4.4 Immutability
+
+The principle to only mutate state when absolutely necessary. Most of the time it would be better to clone or return something new.
+
+This could be memory inefficient at scale. That is why with FP architects ofthen choose to do **structural sharing**: only clone the parts of the data that have changed.
+
+Next to do that memory is cheap these days, so using a bit more memory with the great benefits is not a bad tradeoff.
+
+# 4.5 HOF & Closures
+
+Example of higher order function:
+
+```
+const hof = (fn) => fn(5);
+hof(function a(x) { return x });
+```
+
+Functions as first class citizens can be passed around and returned by functions.
+
+```
+const closureFunction = function() {
+	let count = 0;
+
+	return function increment() {
+		count++;
+
+		return count;
+	}
+}
+
+const incrementFn = closureFunction();
+
+incrementFn();
+```
+# 4.6 Currying
+
+Example of currying:
+
+```
+// Not curried:
+const multiply = (a, b) => a * b;
+
+// Curried
+const curriedMultiply = a => b => a * b;
+
+
+multiply(5, 3); // 15;
+curriedMultiply(5)(3); // 15;
+```
+
+With currying functions have only one parameter can be be combined (**composed**) into new functions. You are basically creating functions on the fly.
+
+# 4.7 Partial application
+
+Like currying the aim is to have less parameters: some parameters are passed in initially, but are stored with closures for later use.
+
+```
+const multiply = (a, b, c) => a * b * c;
+const partialMultiplyBy5 = multiply.bind(null, 5);
+
+partialMultiplyBy5(4, 10); // 200
+```
+
+# 4.8 Memoization
+
+A form of caching data: the returned values of functions are cached.
+
+Example:
+```
+function memoizedAddTo80() {
+	let cache = {};
+
+	return function (n) {
+		if (n in cache) {
+			return cache[n];
+		} else {
+			cache[n] = n + 80;
+
+			return cache[n];
+		}
+	}
+}
+
+const memoized = memoizedAddTo80();
+
+// First call is calculated and the return is cached.
+console.log("1", memoized(5));
+
+// Second call retrieved from cache.
+console.log("2", memoized(5));
+```
+# 4.9 Compose & Pipe
+
+## Compose
+
+**Composition** is the idea that any kind of data transformation should be obvious.
+
+Or: composability is a system design principle that deals with the relationship between components.
+
+```
+const compose = (f, g) => (data) => f(g(data));
+const multiplyBy3 = (num) => num * 3;
+const multiplyBy3AndAbsolute = compose(multiplyBy3, Math.abs());
+
+console.log(multiplyBy3AndAbsolute(-50));
+```
+
+## Pipe
+
+"Performs left-to-right function composition. The leftmost function may have any arity*; the remaining functions must be unary."
+
+It is very similar to compose, but the direction is left-to-right.
+
+```
+const pipe = (f, g) => (data) => g(f(data));
+const multiplyBy3 = (num) => num * 3;
+const multiplyBy3AndAbsolute = pipe(multiplyBy3, Math.abs());
+
+console.log(multiplyBy3AndAbsolute(-50));
+```
+
+## *: Arity
+
+The number of functions that are conposed or piped together.
+
+
+
