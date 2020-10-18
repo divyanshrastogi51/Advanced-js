@@ -779,4 +779,95 @@ console.log(multiplyBy3AndAbsolute(-50));
 The number of functions that are conposed or piped together.
 
 
+# 5 Asynchronous
+**Asynchronous** means: we do not have it right now, but maybe later.
 
+# 5.1 Promises
+
+Promises are handy for asynchronous (non-blocking) code like
+
+- making API calls,
+- grabbing data from a database, or
+- optimizing an image.
+
+## Definition
+
+A Promise is an **object** that may return a single value in the future that is either **resolved** or **rejected** (and a reason why it was rejected).
+
+A promise may be in one of three possible states: **fulfilled**, **rejected** or **pending**.
+
+## Combine multiple Promises
+
+```
+const promise = new Promise((resolve, reject) => {
+	setTimeout(resolve, 0, 'Resolved after 0 seconds.');
+});
+
+const promise = new Promise((resolve, reject) => {
+	setTimeout(resolve, 2000, 'Resolved after 2 seconds.');
+});
+
+const promise = new Promise((resolve, reject) => {
+	setTimeout(resolve, 5000, 'Resolved after 5 seconds.');
+});
+
+Promise.all([promise, promise2, promise3]).then(values => console.log(values));
+
+// Result: Array with the return values from all promises after 5 seconds.
+// Due to `.all()` we have to wait for the last promise to resolve.
+```
+
+## Fetch data from JSON's (API calls)
+
+```
+const urls = [
+	"https://jsonplaceholder.typicode.com/users",
+	"https://jsonplaceholder.typicode.com/posts",
+	"https://jsonplaceholder.typicode.com/albums",
+];
+
+Promise.all(urls.map(url => {
+	return fetch(url).then(resp => resp.json())
+})).then(results => {
+	console.log(results[0]);
+	console.log(results[1]);
+	console.log(results[2]);
+}).catch(() => console.error(error));
+```
+
+# 5.2 Async / Await
+
+With EcmaScript 2015 (ES6) `async / await` was introduced which is build on top of Promises.
+
+# 5.3 Job Queue
+
+In order to introduce promises there had to be some modifications to JavaScript engines or how the **Event Loop** worked.
+
+Next to the **Callback Queue** (also known as the **Task Queue**) there had to be another queue: this became the **Job Queue** (or: **Microtask Queue**).
+
+The Job Queue has a higher priority than the Callback Queue because the Event Loop always checks that one first en then the callback queue.
+
+# 5.4 Parallel, Sequence and Race
+
+## Parallel: `.all()`
+
+Create **parallel** promises that returns once all promises have been fulfilled. The promises are all called at the same time (in parallel).
+
+## Race: `.race()`
+
+The first promise in a set/array that returns something wins.
+
+## Sequence `await` each promise
+
+In sequences each promise cannot be called until the previous one has been fulfilled. Therefore it would take longer than parallel if they call the same promises.
+
+# 5.5 web worker
+web worker is a javascript program running on a different thread alongside
+
+our main threat just like a browser creates a new threat for us when I create new tabs on our program.
+
+```
+var worker = new Worker("worker.js");
+
+worker.postMessage("Hello!");
+```
