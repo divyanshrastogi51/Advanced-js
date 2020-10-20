@@ -1,17 +1,17 @@
 # Advanced-js
-A complete  Modern JavaScript Tutorial from scratch
+A complete  Modern JavaScript Concepts from scratch
 ![Course Structure](img/Advanced_Javascript.png)
 # 1. Foundations
 # 1.1 Inside the Engine
 
 ## Components
 
-**parser**,
-**interpreter**,
-**compiler**,
-**abstract syntax tree (AST)**,
-**call stack**,
-**memory heap**
+* **parser** (It checks for syntax and semantics),
+
+* **abstract syntax tree (AST)**(It is a hierarchical tree like structure of program representation which allows interpreter to understand the program)
+
+* **interpreter**( It lets the AST to get converted into Byte code.),
+* **compiler**(It spits out the most optimized byte code),
 
 ## First engine
 
@@ -79,7 +79,7 @@ Risky patterns that may create memory leaks:
 - Event listeners (should be removed)
 - setInterval (objects references inside intervals will never be cleared in memory because the interval runs forever)
 
-# 1.4 Event Loop, Call Stack en Callback Queue
+# 1.4 Event Loop, Call Stack and Callback Queue
 
 ## Event Loop
 
@@ -145,7 +145,7 @@ Most languages do have block scoping.
 Because JS was weird in that sense they introduced the `let` and `const` keywords in ECMAScript 6. Variables declared with these keywords are block scoped.
 
 # 1.9 Global variables
-
+A JavaScript global variable is declared outside the function or declared with window object. It can be accessed from any function.
 Try to avoid them as much as possible. ;-)
 
 # 1.10 `this`
@@ -314,7 +314,7 @@ let deepClone = JSON.parse(JSON.stringify(obj));
 ```
 # 2.3 Coercion
 
-A very controversial topic.
+A very controversial topic.Its a process of automatic or implicit conversion of values from one data type to another
 
 Operators like `==`, `+` result in coercion. Better avoid generally.
 
@@ -871,3 +871,13 @@ var worker = new Worker("worker.js");
 
 worker.postMessage("Hello!");
 ```
+# 6 Modules in JS
+Modules are just like that in that different pieces of code are grouped together so that things are
+organized and as our application gets larger and larger we can combine different pieces together to
+make large applications.
+
+Modules can load each other and use special directives `export` and `import` to interchange functionality, call functions of one module from another one:
+
+
+# That's It. Feel free to contribute. Make Some PR to improve and add more content.
+# Give it a star if You Enjoyed :)
